@@ -93,7 +93,7 @@ function spawnPaitents(){
 
           default: break;
         }
-        paitent.x = Math.round(random(80.1, 1000.9));
+        paitent.x = Math.round(random(displayWidth - 1780, displayWidth - 115));
         paitent.lifetime = 300;
 
         paitent.depth = g.depth;
@@ -124,7 +124,7 @@ function spawnObstacles(){
 
           default: break;
         }
-        obstacle.x = Math.round(random(20.1, 2090.9));
+        obstacle.x = Math.round(random(displayWidth - 1780, displayWidth - 115));
         obstacle.lifetime = 300;
 
         obstacle.depth = g.depth;
