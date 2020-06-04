@@ -2,6 +2,9 @@ var carImg, person1Img, person2Img, person3Img, potholeImg, barrierImg, roadImg;
 
 var paitentGroup, obstacleGroup;
 
+var counter = 0;
+var timeleft = 120;
+
 function preload(){
     carImg = loadImage("Images/Ambulance.png");
     person1Img = loadImage("Images/patient1.png");
@@ -12,9 +15,16 @@ function preload(){
     roadImg = loadImage("Images/Road.PNG");
 }
 
+function convertSeconds(s){
+    var min = floor(s/60);
+    var sec = s % 60;
+    return nf(min, 1) + ':' + nf(sec, 2);
+}
+
 function setup(){
     canvas = createCanvas(displayWidth - 7, displayHeight - 107);
     a = createSprite(displayWidth/2, displayHeight/2);
+
     a.addImage(roadImg);
     a.y = -2950;
     console.log(displayHeight);
@@ -39,6 +49,15 @@ function setup(){
 
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
+
+    var timer = select("#timer");
+    timer.html(convertSeconds(timeleft - counter));
+
+    function timeIt(){
+        counter++;
+        timer.html(convertSeconds(timeleft - counter));
+    }
+    setInterval(timeIt, 1000);
 }
 
 function draw(){
@@ -93,7 +112,7 @@ function spawnPaitents(){
 
           default: break;
         }
-        paitent.x = Math.round(random(displayWidth - 1780, displayWidth - 115));
+        paitent.x = Math.round(random(displayWidth - 1690, displayWidth - 115));
         paitent.lifetime = 300;
 
         paitent.depth = g.depth;
@@ -124,7 +143,7 @@ function spawnObstacles(){
 
           default: break;
         }
-        obstacle.x = Math.round(random(displayWidth - 1780, displayWidth - 115));
+        obstacle.x = Math.round(random(displayWidth - 1690, displayWidth - 115));
         obstacle.lifetime = 300;
 
         obstacle.depth = g.depth;
