@@ -5,6 +5,14 @@ var paitentGroup, obstacleGroup;
 var counter = 0;
 var timeleft = 120;
 
+var paitentCount = 0;
+var obstacleCount = 0;
+
+var paitentCollected = 0;
+var paitentMissed = 0;
+
+var gameState = 0;
+
 function preload(){
     carImg = loadImage("Images/Ambulance.png");
     person1Img = loadImage("Images/patient1.png");
@@ -22,29 +30,16 @@ function convertSeconds(s){
 }
 
 function setup(){
-    canvas = createCanvas(displayWidth - 7, displayHeight - 107);
-    a = createSprite(displayWidth/2, displayHeight/2);
+    canvas = createCanvas(displayWidth - 7, displayHeight - 158);
 
+    a = createSprite(displayWidth/2, displayHeight/2);
     a.addImage(roadImg);
     a.y = -2950;
-    console.log(displayHeight);
-    //a.debug = true;
     a.scale = 4.5;
-    console.log(a.height);
-    
-    a.velocityY = 10;
+    a.velocityY = 10;    
 
-    /*b.debug = true;
-
-    c.debug = true;
-
-    d.debug = true;*/    
-
-    g = createSprite(500, 575);
+    g = createSprite(500, 520);
     g.addImage(carImg);
-
-    //g.debug = true;
-    //g.scale = 0.7;
     g.setCollider("rectangle", 0, 0, g.width-70, g.height-36);
 
     paitentGroup = createGroup();
@@ -63,26 +58,30 @@ function setup(){
 function draw(){
     background(0);
 
-    //console.log(a.y);
+    if(gameState == 0){
+        if(a.y>0){
+            a.y = -2800;
+        }
 
-    if(a.y>0){
-        a.y = -2800;
-    }
+        if(keyIsDown(LEFT_ARROW)){
+            g.velocityX = -10;
+        }else if(keyIsDown(RIGHT_ARROW)){
+            g.velocityX = 10;
+        } 
+        else{
+            g.velocityX = 0;
+        }
 
-    if(keyDown(RIGHT_ARROW)){
-        g.velocityX = 10;
-    }else{
-        g.velocityX = 0;
-    }
+        spawnPaitents();
+        spawnObstacles();
 
-    if(keyIsDown(LEFT_ARROW)){
-        g.velocityX = -10;
-    }else{
-        g.velocityX = 0;
+        detectPaitent();
+        detectObstacle();
+
+        endGame();
+    }else if(gameState == 1){
+        text("You did your job" + paitentCollected, displayHeight, displayWidth)
     }
-    
-    spawnPaitents();
-    spawnObstacles();
 
     drawSprites();
 }
@@ -112,18 +111,20 @@ function spawnPaitents(){
 
           default: break;
         }
-        paitent.x = Math.round(random(displayWidth - 1690, displayWidth - 115));
-        paitent.lifetime = 300;
+        paitent.x = Math.round(random(200, displayWidth - 200));
+        paitent.lifetime = 200;
 
         paitent.depth = g.depth;
         g.depth = g.depth + 1;
 
         paitentGroup.add(paitent);
+
+        paitentCount++;
     }
 }
 
 function spawnObstacles(){
-    if(frameCount % 70 === 0){
+    if(frameCount % 100 === 0){
         var obstacle = createSprite(400, 0);
 
         obstacle.velocityY = 10;
@@ -143,13 +144,70 @@ function spawnObstacles(){
 
           default: break;
         }
-        obstacle.x = Math.round(random(displayWidth - 1690, displayWidth - 115));
-        obstacle.lifetime = 300;
+        obstacle.x = Math.round(random(200, displayWidth - 200));
+        obstacle.lifetime = 200;
 
         obstacle.depth = g.depth;
         g.depth = g.depth + 1;
     
 
         obstacleGroup.add(obstacle);
+        obstacleCount++;
+    }
+}
+
+function detectPaitent(){
+    for(var i =0; i<paitentCount; i++){
+        var currentP = paitentGroup.get(i);
+
+        if(currentP !== undefined){
+            if(currentP.isTouching(g)){
+                paitentCollected++;
+                paitentGroup.remove(currentP);
+
+                paitentCount--;
+                currentP.destroy();
+
+                console.log("congrats"+paitentCollected);
+            }else if(currentP.y>displayHeight+30){
+                paitentMissed++;
+                paitentGroup.remove(currentP);
+
+                paitentCount--;
+                currentP.destroy();
+
+                console.log("Alas"+paitentMissed);
+            }
+        }
+    }
+}
+
+function detectObstacle(){
+    if(obstacleGroup.isTouching(g)){
+        gameState = 1;
+        a.velocityY = 0;
+
+        obstacleGroup.setVelocityYEach(0);
+        paitentGroup.setVelocityYEach(0);
+
+        obstacleGroup.setLifetimeEach(-1);
+        paitentGroup.setLifetimeEach(-1);
+
+        g.setVelocity(0,0);
+    }
+}
+
+function endGame(){
+    if(counter == timeleft){
+        gameState = 1;
+        a.velocityY = 0;
+
+        obstacleGroup.setVelocityYEach(0);
+        aitentGroup.setVelocityYEach(0);
+
+        obstacleGroup.setLifetimeEach(-1);
+        paitentGroup.setLifetimeEach(-1);
+
+        g.setVelocity(0,0);
     }
 }
