@@ -3,7 +3,7 @@ var carImg, person1Img, person2Img, person3Img, potholeImg, barrierImg, roadImg;
 var paitentGroup, obstacleGroup;
 
 var counter = 0;
-var timeleft = 120;
+var timeleft = 10;
 
 var paitentCount = 0;
 var obstacleCount = 0;
@@ -12,6 +12,10 @@ var paitentCollected = 0;
 var paitentMissed = 0;
 
 var gameState = 0;
+var minn = 2;
+var sec = 60;
+var secMod = "00";
+var flag = 0;
 
 function preload(){
     carImg = loadImage("Images/Ambulance.png");
@@ -23,16 +27,16 @@ function preload(){
     roadImg = loadImage("Images/Road.PNG");
 }
 
-function convertSeconds(s){
+/*function convertSeconds(s){
     var min = floor(s/60);
     var sec = s % 60;
     return nf(min, 1) + ':' + nf(sec, 2);
-}
+}*/
 
 function setup(){
-    canvas = createCanvas(displayWidth - 7, displayHeight - 158);
+    canvas = createCanvas(windowWidth - 7, windowHeight - 8);
 
-    a = createSprite(displayWidth/2, displayHeight/2);
+    a = createSprite(windowWidth/2, windowHeight/2);
     a.addImage(roadImg);
     a.y = -2950;
     a.scale = 4.5;
@@ -45,14 +49,14 @@ function setup(){
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
-    var timer = select("#timer");
+    /*var timer = select("#timer");
     timer.html(convertSeconds(timeleft - counter));
 
     function timeIt(){
         counter++;
         timer.html(convertSeconds(timeleft - counter));
     }
-    setInterval(timeIt, 1000);
+    setInterval(timeIt, 1000);*/
 }
 
 function draw(){
@@ -72,6 +76,33 @@ function draw(){
             g.velocityX = 0;
         }
 
+        if(World.frameCount%30==0){
+            if(flag==0){
+                flag++;
+                minn--;
+            }
+            if(sec==0){
+                minn--;
+                sec = 60;
+            }
+            sec-=1;
+            if (sec<10){
+                secMod="0"+sec;
+            }
+            else{
+                if(sec==60){
+                    secMod="00"                
+                }
+                else{
+                    secMod = sec;
+                }
+            }
+            if(sec==0){
+                minn--;
+                sec = 60;
+            }
+        }
+
         spawnPaitents();
         spawnObstacles();
 
@@ -80,10 +111,32 @@ function draw(){
 
         endGame();
     }else if(gameState == 1){
-        text("You did your job" + paitentCollected, displayHeight, displayWidth)
+        fill("black");
+        textSize(20);
+
+        text("You did your job   You collected: " + paitentCollected, 100, 500)
     }
 
     drawSprites();
+
+    if(gameState == 0){
+        fill("red");
+        textSize(30);
+
+        text(minn+":"+secMod, 20, 30);
+
+        fill("blue");
+        textSize(30);
+
+        text("Score: " + paitentCollected, 100, 30);
+    }
+
+    if(gameState == 1){
+        fill("black");
+        textSize(20);
+
+        text("You did your job   You collected: " + paitentCollected, 100, 100)
+    }
 }
 
 function spawnPaitents(){
@@ -111,7 +164,7 @@ function spawnPaitents(){
 
           default: break;
         }
-        paitent.x = Math.round(random(200, displayWidth - 200));
+        paitent.x = Math.round(random(200, windowWidth - 200));
         paitent.lifetime = 200;
 
         paitent.depth = g.depth;
@@ -144,7 +197,7 @@ function spawnObstacles(){
 
           default: break;
         }
-        obstacle.x = Math.round(random(200, displayWidth - 200));
+        obstacle.x = Math.round(random(200, windowWidth - 200));
         obstacle.lifetime = 200;
 
         obstacle.depth = g.depth;
@@ -169,7 +222,7 @@ function detectPaitent(){
                 currentP.destroy();
 
                 console.log("congrats"+paitentCollected);
-            }else if(currentP.y>displayHeight+30){
+            }else if(currentP.y>windowHeight+30){
                 paitentMissed++;
                 paitentGroup.remove(currentP);
 
@@ -198,12 +251,12 @@ function detectObstacle(){
 }
 
 function endGame(){
-    if(counter == timeleft){
+    if(minn == 0 && sec == 00){
         gameState = 1;
         a.velocityY = 0;
 
         obstacleGroup.setVelocityYEach(0);
-        aitentGroup.setVelocityYEach(0);
+        paitentGroup.setVelocityYEach(0);
 
         obstacleGroup.setLifetimeEach(-1);
         paitentGroup.setLifetimeEach(-1);
