@@ -12,35 +12,33 @@ var paitentCollected = 0;
 var paitentMissed = 0;
 
 var gameState = 0;
-var minn = 2;
+var minn = 1;
 var sec = 60;
 var secMod = "00";
 var flag = 0;
 
 function preload(){
     carImg = loadImage("Images/Ambulance.png");
+
     person1Img = loadImage("Images/patient1.png");
     person2Img = loadImage("Images/patient2.png");
     person3Img = loadImage("Images/patient3.png");
+
     potholeImg = loadImage("Images/pthhole.png");
     barrierImg = loadImage("Images/Barrier.png");
+
     roadImg = loadImage("Images/Road.PNG");
 }
 
-/*function convertSeconds(s){
-    var min = floor(s/60);
-    var sec = s % 60;
-    return nf(min, 1) + ':' + nf(sec, 2);
-}*/
-
 function setup(){
-    canvas = createCanvas(windowWidth - 7, windowHeight - 8);
+    canvas = createCanvas(windowWidth, windowHeight);
 
     a = createSprite(windowWidth/2, windowHeight/2);
     a.addImage(roadImg);
     a.y = -2950;
     a.scale = 4.5;
-    a.velocityY = 10;    
+
+    a.velocityY = (10);   
 
     g = createSprite(500, 520);
     g.addImage(carImg);
@@ -49,14 +47,6 @@ function setup(){
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
-    /*var timer = select("#timer");
-    timer.html(convertSeconds(timeleft - counter));
-
-    function timeIt(){
-        counter++;
-        timer.html(convertSeconds(timeleft - counter));
-    }
-    setInterval(timeIt, 1000);*/
 }
 
 function draw(){
@@ -67,10 +57,14 @@ function draw(){
             a.y = -2800;
         }
 
-        if(keyIsDown(LEFT_ARROW)){
+        if((touches.length<0 || keyIsDown(LEFT_ARROW))){
             g.velocityX = -10;
-        }else if(keyIsDown(RIGHT_ARROW)){
+            touches = [];
+
+        }else if((touches.length<0 || keyIsDown(RIGHT_ARROW))){
             g.velocityX = 10;
+            touches = [];
+
         } 
         else{
             g.velocityX = 0;
@@ -135,7 +129,7 @@ function draw(){
         fill("black");
         textSize(20);
 
-        text("You did your job   You collected: " + paitentCollected, 100, 100)
+        text("You did your job   Your Score: " + paitentCollected, 100, 100)
     }
 }
 
@@ -143,16 +137,16 @@ function spawnPaitents(){
     if(frameCount % 70 === 0){
         var paitent = createSprite(210, 0);
 
-        paitent.velocityY = 10;
+        paitent.velocityY = (10); 
 
         var rand = Math.round(random(1, 3));
         switch(rand) {
-          case 1: paitent.addImage(person1Img);
-          
+          case 1: paitent.addImage(person1Img);              
+
                   paitent.scale = 0.17;
                   break;
 
-          case 2: paitent.addImage(person2Img);
+          case 2: paitent.addImage(person2Img);                
 
                   paitent.scale = 0.17;  
                   break;
@@ -180,18 +174,18 @@ function spawnObstacles(){
     if(frameCount % 100 === 0){
         var obstacle = createSprite(400, 0);
 
-        obstacle.velocityY = 10;
+        obstacle.velocityY = (10);  
 
         var rand = Math.round(random(1, 2));
         switch(rand) {
           case 1: obstacle.addImage(potholeImg);
-                   //e.debug = true;
+                   
                   obstacle.scale = 0.32;
                   obstacle.setCollider("circle", 0, 0, obstacle.width/2-30);
                 break;
 
           case 2: obstacle.addImage(barrierImg);
-                  //f.debug = true;
+                
                   obstacle.scale = 0.5; 
                 break;
 
@@ -251,7 +245,7 @@ function detectObstacle(){
 }
 
 function endGame(){
-    if(minn == 0 && sec == 00){
+    if(minn<0){
         gameState = 1;
         a.velocityY = 0;
 
