@@ -44,7 +44,7 @@ function setup(){
 
     a.velocityY = (10);   
 
-    g = createSprite(742, 520);
+    g = createSprite(600, 520);
     g.addImage(carImg);
     g.setCollider("rectangle", 0, 0, g.width-70, g.height-36);
 
@@ -60,6 +60,8 @@ function draw(){
     background(0);
 
     if(gameState == 0){
+        a.visible = true;
+        g.visible = true;
 
         restart.visible = false;
         if(a.y>0){
@@ -114,10 +116,24 @@ function draw(){
 
         endGame();
     }else if(gameState == 1){
-        fill("black");
-        textSize(20);
 
-        text("You did your job   You collected: " + paitentCollected, 100, 500)
+        a.visible = false;
+        g.visible = false;
+        paitentGroup.destroyEach();
+        obstacleGroup.destroyEach();
+
+        paitentGroup.setVelocityXEach(0);
+        
+        fill("white");
+        textSize(50);
+
+        text("You did your job   You saved: " + paitentCollected, 350, 100)
+
+        restart.visible = true;
+
+        if(mousePressedOver(restart)) {
+            reset();
+        }
     }
 
     drawSprites();
@@ -133,30 +149,18 @@ function draw(){
 
         text("Score: " + paitentCollected, 100, 30);
     }
-
-    if(gameState == 1){
-        fill("black");
-        textSize(50);
-
-        text("You did your job   Your Score: " + paitentCollected, 358, 100)
-
-        restart.visible = true;
-
-        if(mousePressedOver(restart)) {
-            reset();
-        }
-    }
 }
 
 function spawnPaitents(){
     if(frameCount % 70 === 0){
-        var paitent = createSprite(210, 0);
+        var paitent = createSprite(random(1, 8), 0);
 
-        paitent.velocityY = (10); 
+        paitent.velocityY = (10);
+        paitent.velocityX = (random(-2,2) * 1);
 
         var rand = Math.round(random(1, 3));
         switch(rand) {
-          case 1: paitent.addImage(person1Img);              
+          case 1: paitent.addImage(person1Img);            
 
                   paitent.scale = 0.17;
                   break;
@@ -189,7 +193,7 @@ function spawnObstacles(){
     if(frameCount % 100 === 0){
         var obstacle = createSprite(400, 0);
 
-        obstacle.velocityY = (10);  
+        obstacle.velocityY = 10;  
 
         var rand = Math.round(random(1, 2));
         switch(rand) {
@@ -286,5 +290,6 @@ function reset(){
     a.velocityY = 10;
     g.x = 742;
 
+    minn = 0;
     sec = 60;
 }
