@@ -11,6 +11,8 @@ var obstacleCount = 0;
 var paitentCollected = 0;
 var paitentMissed = 0;
 
+var restart;
+
 var gameState = 0;
 var minn = 1;
 var sec = 60;
@@ -28,6 +30,8 @@ function preload(){
     barrierImg = loadImage("Images/Barrier.png");
 
     roadImg = loadImage("Images/Road.PNG");
+
+    reImg = loadImage("Images/Restart.png")
 }
 
 function setup(){
@@ -40,21 +44,26 @@ function setup(){
 
     a.velocityY = (10);   
 
-    g = createSprite(500, 520);
+    g = createSprite(742, 520);
     g.addImage(carImg);
     g.setCollider("rectangle", 0, 0, g.width-70, g.height-36);
 
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
+    restart = createSprite(742, 350);
+    restart.addImage(reImg);
+    
 }
 
 function draw(){
     background(0);
 
     if(gameState == 0){
+
+        restart.visible = false;
         if(a.y>0){
-            a.y = -2800;
+            a.y = -2500;
         }
 
         if((touches.length<0 || keyIsDown(LEFT_ARROW))){
@@ -127,9 +136,15 @@ function draw(){
 
     if(gameState == 1){
         fill("black");
-        textSize(20);
+        textSize(50);
 
-        text("You did your job   Your Score: " + paitentCollected, 100, 100)
+        text("You did your job   Your Score: " + paitentCollected, 358, 100)
+
+        restart.visible = true;
+
+        if(mousePressedOver(restart)) {
+            reset();
+        }
     }
 }
 
@@ -257,4 +272,19 @@ function endGame(){
 
         g.setVelocity(0,0);
     }
+}
+
+function reset(){
+    gameState = 0;
+    restart.visible = false;
+
+    obstacleGroup.destroyEach();
+    paitentGroup.destroyEach();
+
+    paitentCollected = 0;
+
+    a.velocityY = 10;
+    g.x = 742;
+
+    sec = 60;
 }
