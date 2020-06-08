@@ -12,10 +12,13 @@ var paitentCollected = 0;
 var paitentMissed = 0;
 
 var restart;
+var play;
 
-var gameState = 0;
+var siren;
+
+var gameState = 3;
 var minn = 1;
-var sec = 60;
+var sec = 50;
 var secMod = "00";
 var flag = 0;
 
@@ -32,6 +35,9 @@ function preload(){
     roadImg = loadImage("Images/Road.PNG");
 
     reImg = loadImage("Images/Restart.png")
+    playImg = loadImage("Images/Play.png")
+
+    siren = loadSound("Sounds/Siren.mp3");
 }
 
 function setup(){
@@ -42,38 +48,68 @@ function setup(){
     a.y = -2950;
     a.scale = 4.5;
 
-    a.velocityY = (10);   
+    a.velocityY = (6 + 3*paitentCollected);   
 
     g = createSprite(600, 520);
     g.addImage(carImg);
-    g.setCollider("rectangle", 0, 0, g.width-70, g.height-36);
+    g.setCollider("rectangle", 0, 0, g.width-70, g.height- 70);
 
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
     restart = createSprite(742, 350);
     restart.addImage(reImg);
-    
+
+    play = createSprite(750, 500);
+    play.addImage(playImg);
 }
 
 function draw(){
     background(0);
+    if (gameState == 3){  
 
-    if(gameState == 0){
+        play.visible = true;
+        g.visible = false;
+        a.visible = false;
+        restart.visible = false;
+
+        fill("red");
+        textSize(70);
+        text("COVID Rescue", 450, 100);
+
+        fill("white");
+        textSize(50);
+        text("The hospital is half a kilometre away ...", 280, 180);
+        
+        fill("white");
+        textSize(50);
+        text("save as many COVID paitents as you can ..", 240, 280);
+
+        fill("white");
+        textSize(50);
+        text("but be aware of obstales.", 420, 380);
+
+        if((touches.length<0 || mousePressedOver(play))){
+            gameState = 0;
+        }
+    }
+    else if(gameState == 0){
         a.visible = true;
         g.visible = true;
 
         restart.visible = false;
+        play.visible = false;
         if(a.y>0){
             a.y = -2500;
+            siren.play();
         }
 
         if((touches.length<0 || keyIsDown(LEFT_ARROW))){
-            g.velocityX = -10;
+            g.velocityX = -10 - (2 * (paitentCollected +1)) ;
             touches = [];
 
         }else if((touches.length<0 || keyIsDown(RIGHT_ARROW))){
-            g.velocityX = 10;
+            g.velocityX = 10 +  (2 * (paitentCollected +1));
             touches = [];
 
         } 
@@ -95,7 +131,7 @@ function draw(){
                 secMod="0"+sec;
             }
             else{
-                if(sec==60){
+                if(sec==50){
                     secMod="00"                
                 }
                 else{
@@ -115,10 +151,12 @@ function draw(){
         detectObstacle();
 
         endGame();
-    }else if(gameState == 1){
+    }else if(gameState == 1 && sec>00){
 
         a.visible = false;
         g.visible = false;
+        play.visible = false;
+
         paitentGroup.destroyEach();
         obstacleGroup.destroyEach();
 
@@ -127,11 +165,11 @@ function draw(){
         fill("white");
         textSize(50);
 
-        text("You did your job   You saved: " + paitentCollected, 350, 100)
+        text("Oh no.. You failed :-( " + paitentCollected + " paitents were with you.", 100, 100)
 
         restart.visible = true;
 
-        if(mousePressedOver(restart)) {
+        if((touches.length<0 || mousePressedOver(restart))){
             reset();
         }
     }
@@ -142,12 +180,12 @@ function draw(){
         fill("red");
         textSize(30);
 
-        text(minn+":"+secMod, 20, 30);
+        text("Hospital is " + minn +"."+secMod + " Kms away from you. ", 20, 30);
 
         fill("blue");
         textSize(30);
 
-        text("Score: " + paitentCollected, 100, 30);
+        text("Score: " + paitentCollected, 100, 59);
     }
 }
 
@@ -155,7 +193,7 @@ function spawnPaitents(){
     if(frameCount % 70 === 0){
         var paitent = createSprite(random(1, 8), 0);
 
-        paitent.velocityY = (10);
+        paitent.velocityY = (6 + (3 * paitentCollected));
         paitent.velocityX = (random(-2,2) * 1);
 
         var rand = Math.round(random(1, 3));
@@ -193,7 +231,7 @@ function spawnObstacles(){
     if(frameCount % 100 === 0){
         var obstacle = createSprite(400, 0);
 
-        obstacle.velocityY = 10;  
+        obstacle.velocityY = (6 + 3*paitentCollected);  
 
         var rand = Math.round(random(1, 2));
         switch(rand) {
@@ -275,6 +313,10 @@ function endGame(){
         paitentGroup.setLifetimeEach(-1);
 
         g.setVelocity(0,0);
+
+        fill("green");
+        textSize(50);
+        text("You are a Hero !!... You saved: " + paitentCollected + " many paitents :-) ",350, 100 );
     }
 }
 
