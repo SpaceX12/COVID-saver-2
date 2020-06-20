@@ -11,8 +11,7 @@ var obstacleCount = 0;
 var paitentCollected = 0;
 var paitentMissed = 0;
 
-var restart;
-var play;
+var restart, play, mm ;
 
 var siren;
 
@@ -36,19 +35,20 @@ function preload(){
 
     reImg = loadImage("Images/Restart.png")
     playImg = loadImage("Images/Play.png")
-
+    mmImg = loadImage("Images/main_menu.png");
+    
     siren = loadSound("Sounds/Siren.mp3");
 }
 
 function setup(){
     canvas = createCanvas(windowWidth, windowHeight);
 
-    a = createSprite(windowWidth/2, windowHeight/2);
+    a = createSprite(windowWidth/2, windowHeight/2, 0, );
     a.addImage(roadImg);
     a.y = -2950;
     a.scale = 4.5;
 
-    a.velocityY = (6 + 3*paitentCollected);   
+    a.velocityY = (10 + 3*paitentCollected);   
 
     g = createSprite(600, 520);
     g.addImage(carImg);
@@ -57,11 +57,15 @@ function setup(){
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
-    restart = createSprite(742, 350);
+    restart = createSprite(720, 350);
     restart.addImage(reImg);
 
     play = createSprite(750, 500);
     play.addImage(playImg);
+
+    mm = createSprite(835, 550);
+    mm.scale = 1.7;
+    mm.addImage(mmImg);
 }
 
 function draw(){
@@ -69,6 +73,7 @@ function draw(){
     if (gameState == 3){  
 
         play.visible = true;
+        mm.visible = false;
         g.visible = false;
         a.visible = false;
         restart.visible = false;
@@ -99,13 +104,16 @@ function draw(){
 
         restart.visible = false;
         play.visible = false;
+
         if(a.y>0){
             a.y = -2500;
             siren.play();
         }
 
-        if((touches.length<0 || keyIsDown(LEFT_ARROW))){
-            g.velocityX = -10 - (2 * (paitentCollected +1)) ;
+        touchMoved();
+
+        /*if((touches.length<0 || keyIsDown(LEFT_ARROW))){
+            g.velocityX = -10 - (2* (paitentCollected +1)) ;
             touches = [];
 
         }else if((touches.length<0 || keyIsDown(RIGHT_ARROW))){
@@ -115,7 +123,7 @@ function draw(){
         } 
         else{
             g.velocityX = 0;
-        }
+        }*/
 
         if(World.frameCount%30==0){
             if(flag==0){
@@ -151,11 +159,12 @@ function draw(){
         detectObstacle();
 
         endGame();
-    }else if(gameState == 1 && sec>00){
+    }else if(gameState == 1 && minn == 0){
 
         a.visible = false;
         g.visible = false;
         play.visible = false;
+        mm.visible = true;
 
         paitentGroup.destroyEach();
         obstacleGroup.destroyEach();
@@ -165,12 +174,16 @@ function draw(){
         fill("white");
         textSize(50);
 
-        text("Oh no.. You failed :-( " + paitentCollected + " paitents were with you.", 100, 100)
+        text("Oh no.. You failed :-( " + paitentCollected + " paitents were with you.", 190, 100)
 
         restart.visible = true;
 
         if((touches.length<0 || mousePressedOver(restart))){
             reset();
+        }
+
+        if((touches.length<0 || mousePressedOver(mm))){
+            gameState = 3;
         }
     }
 
@@ -193,7 +206,7 @@ function spawnPaitents(){
     if(frameCount % 70 === 0){
         var paitent = createSprite(random(1, 8), 0);
 
-        paitent.velocityY = (6 + (3 * paitentCollected));
+        paitent.velocityY = (10 + (4 * paitentCollected));
         paitent.velocityX = (random(-2,2) * 1);
 
         var rand = Math.round(random(1, 3));
@@ -231,7 +244,7 @@ function spawnObstacles(){
     if(frameCount % 100 === 0){
         var obstacle = createSprite(400, 0);
 
-        obstacle.velocityY = (6 + 3*paitentCollected);  
+        obstacle.velocityY = (10+ 4*paitentCollected);  
 
         var rand = Math.round(random(1, 2));
         switch(rand) {
@@ -272,7 +285,6 @@ function detectPaitent(){
                 paitentCount--;
                 currentP.destroy();
 
-                console.log("congrats"+paitentCollected);
             }else if(currentP.y>windowHeight+30){
                 paitentMissed++;
                 paitentGroup.remove(currentP);
@@ -280,7 +292,6 @@ function detectPaitent(){
                 paitentCount--;
                 currentP.destroy();
 
-                console.log("Alas"+paitentMissed);
             }
         }
     }
@@ -302,9 +313,20 @@ function detectObstacle(){
 }
 
 function endGame(){
-    if(minn<0){
-        gameState = 1;
+    if(minn < 0){
+        gameState = 1; 
+        siren.stop();             
+        
         a.velocityY = 0;
+
+        g.visible = false;
+        a.visible = false;
+        play.visible = false;
+
+        paitentGroup.destroyEach();
+        obstacleGroup.destroyEach();
+
+        paitentGroup.setVelocityXEach(0);
 
         obstacleGroup.setVelocityYEach(0);
         paitentGroup.setVelocityYEach(0);
@@ -316,7 +338,11 @@ function endGame(){
 
         fill("green");
         textSize(50);
-        text("You are a Hero !!... You saved: " + paitentCollected + " many paitents :-) ",350, 100 );
+        text("You are a Hero !!... You saved: " + paitentCollected + " many paitents :-) ",150, 100 );
+
+        if((touches.length<0 || mousePressedOver(mm))){
+            gameState = 3;
+        }
     }
 }
 
@@ -334,4 +360,8 @@ function reset(){
 
     minn = 0;
     sec = 60;
+}
+
+function touchMoved(){
+    g.x = mouseX;
 }
