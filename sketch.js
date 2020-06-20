@@ -94,8 +94,11 @@ function draw(){
         textSize(50);
         text("but be aware of obstales.", 420, 380);
 
-        if((touches.length<0 || mousePressedOver(play))){
+        /*if((touches.length<0 || mousePressedOver(play))){
             gameState = 0;
+        }*/
+        function touchStarted(){
+            
         }
     }
     else if(gameState == 0){
@@ -111,19 +114,6 @@ function draw(){
         }
 
         touchMoved();
-
-        /*if((touches.length<0 || keyIsDown(LEFT_ARROW))){
-            g.velocityX = -10 - (2* (paitentCollected +1)) ;
-            touches = [];
-
-        }else if((touches.length<0 || keyIsDown(RIGHT_ARROW))){
-            g.velocityX = 10 +  (2 * (paitentCollected +1));
-            touches = [];
-
-        } 
-        else{
-            g.velocityX = 0;
-        }*/
 
         if(World.frameCount%30==0){
             if(flag==0){
