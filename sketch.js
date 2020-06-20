@@ -50,20 +50,20 @@ function setup(){
 
     a.velocityY = (10 + 3*paitentCollected);   
 
-    g = createSprite(windowWidth, windowHeight);
+    g = createSprite(600, 520);
     g.addImage(carImg);
     g.setCollider("rectangle", 0, 0, g.width-70, g.height- 70);
 
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
-    restart = createSprite(windowWidth, windowHeight);
+    restart = createSprite(720, 350);
     restart.addImage(reImg);
 
-    play = createSprite(windowWidth, windowHeight);
+    play = createSprite(750, 500);
     play.addImage(playImg);
 
-    mm = createSprite(windowWidth, windowHeight);
+    mm = createSprite(835, 550);
     mm.scale = 1.7;
     mm.addImage(mmImg);
 }
@@ -80,25 +80,25 @@ function draw(){
 
         fill("red");
         textSize(70);
-        text("COVID Rescue", windowWidth, windowHeight);
+        text("COVID Rescue", 450, 100);
 
         fill("white");
         textSize(50);
-        text("The hospital is half a kilometre away ...", windowWidth, windowHeight);
+        text("The hospital is half a kilometre away ...", 280, 180);
         
         fill("white");
         textSize(50);
-        text("save as many COVID paitents as you can ..", windowWidth, windowHeight);
+        text("save as many COVID paitents as you can ..", 240, 280);
 
         fill("white");
         textSize(50);
-        text("but be aware of obstales.", windowWidth, windowHeight);
+        text("but be aware of obstales.", 420, 380);
 
         /*if((touches.length<0 || mousePressedOver(play))){
             gameState = 0;
         }*/
-        function touchStarted(){
-
+        function touchStarted(play){
+            gameState = 0;
         }
     }
     else if(gameState == 0){
