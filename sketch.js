@@ -60,7 +60,7 @@ function setup(){
     restart = createSprite(720, 350);
     restart.addImage(reImg);
 
-    play = createSprite(750, 500);
+    play = createSprite(windowHeight/0.9, windowWidth/2.7);
     play.addImage(playImg);
 
     mm = createSprite(835, 550);
@@ -80,19 +80,19 @@ function draw(){
 
         fill("red");
         textSize(70);
-        text("COVID Rescue", 450, windowWidth/16);
+        text("COVID Rescue", windowHeight/1.5, windowWidth/16);
 
         fill("white");
         textSize(50);
-        text("The hospital is half a kilometre away ...", 280, windowWidth/8);
+        text("The hospital is half a kilometre away ...", windowHeight/2, windowWidth/8);
         
         fill("white");
         textSize(50);
-        text("save as many COVID paitents as you can ..", 240, windowWidth/5);
+        text("save as many COVID paitents as you can ..", windowHeight/3, windowWidth/5);
 
         fill("white");
         textSize(50);
-        text("but be aware of obstales.", 420, windowWidth/3.7);
+        text("but be aware of obstales.", windowHeight/1.5, windowWidth/3.7);
 
         if((touches.length<0 || mousePressedOver(play))){
             gameState = 0;
