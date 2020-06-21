@@ -80,26 +80,25 @@ function draw(){
 
         fill("red");
         textSize(70);
-        text("COVID Rescue", 450, 100);
+        text("COVID Rescue", 450, windowWidth/16);
 
         fill("white");
         textSize(50);
-        text("The hospital is half a kilometre away ...", 280, 180);
+        text("The hospital is half a kilometre away ...", 280, windowWidth/8);
         
         fill("white");
         textSize(50);
-        text("save as many COVID paitents as you can ..", 240, 280);
+        text("save as many COVID paitents as you can ..", 240, windowWidth/5);
 
         fill("white");
         textSize(50);
-        text("but be aware of obstales.", 420, 380);
+        text("but be aware of obstales.", 420, windowWidth/3.7);
 
-        /*if((touches.length<0 || mousePressedOver(play))){
+        if((touches.length<0 || mousePressedOver(play))){
             gameState = 0;
-        }*/
-        function touchStarted(play){
-            gameState = 0;
+            touches = [];
         }
+
     }
     else if(gameState == 0){
         a.visible = true;
@@ -112,6 +111,7 @@ function draw(){
             a.y = -2500;
             siren.play();
         }
+        text("Swipe from left to right to move", 20, windowWidth/2);
 
         touchMoved();
 
@@ -170,10 +170,12 @@ function draw(){
 
         if((touches.length<0 || mousePressedOver(restart))){
             reset();
+            touches = [];
         }
 
         if((touches.length<0 || mousePressedOver(mm))){
             gameState = 3;
+            touches = [];
         }
     }
 
@@ -332,6 +334,7 @@ function endGame(){
 
         if((touches.length<0 || mousePressedOver(mm))){
             gameState = 3;
+            touches = [];
         }
     }
 }
