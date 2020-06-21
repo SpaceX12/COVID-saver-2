@@ -57,13 +57,13 @@ function setup(){
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
-    restart = createSprite(windowHeight/0.9, windowWidth/2.7);
+    restart = createSprite(windowWidth/1.3, windowHeight/2);
     restart.addImage(reImg);
 
-    play = createSprite(windowHeight/0.9, windowWidth/2.7);
+    play = createSprite(windowWidth/2, windowHeight/1.6);
     play.addImage(playImg);
 
-    mm = createSprite(windowHeight/0.9, windowWidth/2.7);
+    mm = createSprite(windowWidth/2.3, windowHeight/1.7);
     mm.scale = 1.7;
     mm.addImage(mmImg);
 }
@@ -80,21 +80,21 @@ function draw(){
 
         fill("red");
         textSize(70);
-        text("COVID Rescue", windowHeight/1.5, windowWidth/16);
+        text("COVID Rescue", windowWidth/3.5, windowHeight/7.7);
 
         fill("white");
         textSize(50);
-        text("The hospital is half a kilometre away ...", windowHeight/2, windowWidth/8);
+        text("The hospital is a kilometre away ...", windowWidth/4.5, windowHeight/5);
         
         fill("white");
         textSize(50);
-        text("save as many COVID paitents as you can ..", windowHeight/3, windowWidth/5);
+        text("save as many COVID paitents as you can ..", windowWidth/5.5, windowHeight/3);
 
         fill("white");
         textSize(50);
-        text("but be aware of obstales.", windowHeight/1.5, windowWidth/3.7);
+        text("but be aware of obstales.", windowWidth/3.7, windowHeight/2);
 
-        if((touches.length<0 || mousePressedOver(play))){
+        if((touches.length>0 || mousePressedOver(play))){
             gameState = 0;
             touches = [];
         }
@@ -163,16 +163,16 @@ function draw(){
         fill("white");
         textSize(50);
 
-        text("Oh no.. You failed :-( " + paitentCollected + " paitents were with you.", 190, 100)
+        text("Oh no.. You failed :-( " + paitentCollected + " paitents were with you.", windowWidth/5, windowHeight/4);
 
         restart.visible = true;
 
-        if((touches.length<0 || mousePressedOver(restart))){
+        if((touches.length>0 || mousePressedOver(restart))){
             reset();
             touches = [];
         }
 
-        if((touches.length<0 || mousePressedOver(mm))){
+        if((touches.length>0 || mousePressedOver(mm))){
             gameState = 3;
             touches = [];
         }
@@ -184,13 +184,13 @@ function draw(){
         fill("red");
         textSize(30);
 
-        text("Hospital is " + minn +"."+secMod + " Kms away from you. ",  windowHeight/19, windowWidth/31);
+        text("Hospital is " + minn +"."+secMod + " Kms away from you. ",  windowWidth/21, windowHeight/19);
 
         fill("blue");
         textSize(30);
 
-        text("Score: " + paitentCollected,  windowHeight/7.9, windowWidth/19);
-        text("Swipe from left to right to move", 20, windowWidth/2);
+        text("Score: " + paitentCollected,  windowWidth/14, windowHeight/12);
+        text("Swipe from left to right to move", windowWidth/2, windowHeight/14);
     }
 }
 
