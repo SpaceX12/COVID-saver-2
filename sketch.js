@@ -105,6 +105,7 @@ function draw(){
         g.visible = true;
 
         restart.visible = false;
+        mm.visible = false;
         play.visible = false;
 
         if(a.y>0){
@@ -332,7 +333,7 @@ function endGame(){
         textSize(50);
         text("You are a Hero !!... You saved: " + paitentCollected + " many paitents :-) ",150, 100 );
 
-        if((touches.length<0 || mousePressedOver(mm))){
+        if((touches.length>0 || mousePressedOver(mm))){
             gameState = 3;
             touches = [];
         }
@@ -342,6 +343,7 @@ function endGame(){
 function reset(){
     gameState = 0;
     restart.visible = false;
+    mm.visible = false;
 
     obstacleGroup.destroyEach();
     paitentGroup.destroyEach();
