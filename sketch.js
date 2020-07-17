@@ -36,8 +36,6 @@ function preload(){
     reImg = loadImage("Images/Restart.png")
     playImg = loadImage("Images/Play.png")
     mmImg = loadImage("Images/main_menu.png");
-    
-    siren = loadSound("Sounds/Siren.mp3");
 }
 
 function setup(){
@@ -46,26 +44,26 @@ function setup(){
     a = createSprite(windowWidth/2, windowHeight/2, 0, );
     a.addImage(roadImg);
     a.y = -2950;
-    a.scale = 4.5;
 
-    a.velocityY = (10 + 3*paitentCollected);   
+    a.scale = 4.5; 
 
     g = createSprite(600, 520);
     g.addImage(carImg);
     g.setCollider("rectangle", 0, 0, g.width-70, g.height- 70);
+    
 
     paitentGroup = createGroup();
     obstacleGroup = createGroup();
 
-    restart = createSprite(windowWidth/1.3, windowHeight/2);
-    restart.addImage(reImg);
+    mm = createSprite(windowWidth/1.3, windowHeight/1.7);
+    mm.scale = 1.7;
+    mm.addImage(mmImg);
 
     play = createSprite(windowWidth/2, windowHeight/1.6);
     play.addImage(playImg);
 
-    mm = createSprite(windowWidth/2.3, windowHeight/1.7);
-    mm.scale = 1.7;
-    mm.addImage(mmImg);
+    restart = createSprite(windowWidth/3.3, windowHeight/2);
+    restart.addImage(reImg);
 }
 
 function draw(){
@@ -94,10 +92,11 @@ function draw(){
         textSize(50);
         text("but be aware of obstales.", windowWidth/3.7, windowHeight/2);
 
-        if((touches.length>0 || mousePressedOver(play))){
+        if((touches.length > 0 || mousePressedOver(play))){
             gameState = 0;
             touches = [];
         }
+        paitentCollected = 0;
 
     }
     else if(gameState == 0){
@@ -108,9 +107,11 @@ function draw(){
         mm.visible = false;
         play.visible = false;
 
+        a.velocityY = (10);  
+
         if(a.y>0){
-            a.y = -2500;
-            siren.play();
+            a.y = -2500
+            //siren.play();
         }
 
         touchMoved();
@@ -142,13 +143,14 @@ function draw(){
             }
         }
 
+        endGame();
+
         spawnPaitents();
         spawnObstacles();
 
         detectPaitent();
         detectObstacle();
 
-        endGame();
     }else if(gameState == 1 && minn == 0){
 
         a.visible = false;
@@ -164,7 +166,7 @@ function draw(){
         fill("white");
         textSize(50);
 
-        text("Oh no.. You failed :-( " + paitentCollected + " paitents were with you.", windowWidth/5, windowHeight/4);
+        text("Oh no..  You failed   " + paitentCollected + " paitents were with you.", windowWidth/6, windowHeight/4);
 
         restart.visible = true;
 
@@ -185,7 +187,7 @@ function draw(){
         fill("red");
         textSize(30);
 
-        text("Hospital is " + minn +"."+secMod + " Kms away from you. ",  windowWidth/21, windowHeight/19);
+        text("Hospital is "+secMod + " Kms away from you. ",  windowWidth/21, windowHeight/19);
 
         fill("blue");
         textSize(30);
@@ -307,8 +309,7 @@ function detectObstacle(){
 
 function endGame(){
     if(minn < 0){
-        gameState = 1; 
-        siren.stop();             
+        gameState = 1;          
         
         a.velocityY = 0;
 
@@ -333,7 +334,7 @@ function endGame(){
         textSize(50);
         text("You are a Hero !!... You saved: " + paitentCollected + " many paitents :-) ",150, 100 );
 
-        if((touches.length>0 || mousePressedOver(mm))){
+        if((touches.length > 0 || mousePressedOver(mm))){
             gameState = 3;
             touches = [];
         }
